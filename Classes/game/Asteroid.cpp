@@ -5,7 +5,6 @@
 
 Asteroid::Asteroid() {
     angle_ = rand() % 31400 / 1000.0f;
-
     vAngle = 0.3f;
     size_ = ASTEROID_SIZE;
     Vertex vertex;
@@ -24,10 +23,12 @@ void Asteroid::updateAnimation(vec2 acc) {
     auto width = Game::getInstance().getWidth();
     auto height = Game::getInstance().getHeight();
 
-    velocity.x = std::max(std::min(velocity.x + acc.x, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX); //* delta / 1000.0f;
-    velocity.y = std::max(std::min(velocity.y + acc.y, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX);//* delta / 1000.0f;
-    position.x += velocity.x;//* delta / 1000.0f;
-    position.y += velocity.y;//* delta / 1000.0f;
+    //velocity.x = std::max(std::min(velocity.x + acc.x, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX);
+    //velocity.y = std::max(std::min(velocity.y + acc.y, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX);
+    
+    position.x += velocity.x + acc.x;
+    position.y += velocity.y + acc.y;
+    
     if (position.x > width / 2) {
         position.x -= width;
     }
@@ -40,7 +41,7 @@ void Asteroid::updateAnimation(vec2 acc) {
     if (position.y < -height / 2) {
         position.y += height;
     }
-    std::cout << position.x << " " << position.y << " speed " << velocity.x << ":" << velocity.y << "\n";
+    //std::cout << position.x << " " << position.y << " speed " << velocity.x << ":" << velocity.y << "\n";
     angle_ += vAngle;
 }
 

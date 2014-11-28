@@ -13,13 +13,11 @@
 #include "Ship.h"
 #include "Bullet.h"
 #include "Asteroid.h"
-#include <deque>
-#include <set>
 
 class Painter;
 
-typedef std::deque<Bullet> Bullets;
-typedef std::set<Asteroid *> Asteroids;
+typedef std::vector<Bullet *> Bullets;
+typedef std::vector<Asteroid *> Asteroids;
 
 class Game {
 public:

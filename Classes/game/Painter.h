@@ -22,7 +22,7 @@ class Painter {
 public:
     Painter(GLuint program);
 
-    void drawAsteroid(const Asteroid *asteroid);
+    //void drawAsteroid(const Asteroid *asteroid);
 
     void drawShip(const Ship *ship);
 

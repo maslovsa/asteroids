@@ -14,8 +14,8 @@
 
 class Painter;
 
-const int ASTEROID_SIZE = 64;
-const float ASTEROID_SPEED_MAX = 10.0f;
+const int ASTEROID_SIZE = 32;
+const float ASTEROID_SPEED_MAX = 5.0f;
 
 class Asteroid : public GameObject {
 public:
@@ -27,7 +27,7 @@ public:
 
     void setSize(float size);
 
-    float vAngle;
+
 private:
 
 };

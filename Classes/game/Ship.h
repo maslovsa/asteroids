@@ -27,7 +27,7 @@ public:
     void updateAnimation(Keys);
 
     void setAngel(float angle);
-
+    vec2 direction;
 protected:
     Jet jet_;
 };

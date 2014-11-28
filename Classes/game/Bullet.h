@@ -15,7 +15,7 @@
 
 class Painter;
 
-const int BULLET_SIZE = 14;
+const int BULLET_SIZE = 4;
 
 class Bullet : public GameObject {
 
@@ -27,6 +27,8 @@ public:
     void updateAnimation(vec2 acc);
 
     int live;
+    
+    bool isLive;
 };
 
 #endif
