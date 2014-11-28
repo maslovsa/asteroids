@@ -18,9 +18,7 @@ class GameObject {
 
 public:
 
-    //virtual ~GameObject();
-
-    virtual void draw(Painter &) const = 0;
+    virtual void render(Painter &) const = 0;
 
     float getAngle() const {
         return angle_;
@@ -32,10 +30,10 @@ public:
 
     std::vector<Vertex> body;
     vec2 position;
+    vec2 velocity;
 protected:
-    float angle_;
+    float angle_; // radians
     float size_;
-
 };
 
 #endif

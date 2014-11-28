@@ -26,10 +26,10 @@
                     renderbufferStorage:GL_RENDERBUFFER
                            fromDrawable:eaglLayer];
 
-        m_renderingEngine->Initialize(CGRectGetWidth(frame), CGRectGetHeight(frame));
+        m_renderingEngine->init((int)CGRectGetWidth(frame),(int) CGRectGetHeight(frame));
         NSLog(@"w=%f h=%f", CGRectGetWidth(frame), CGRectGetHeight(frame));
         [self drawView:nil];
-        m_timestamp = CACurrentMediaTime();
+        m_timestamp = (float)CACurrentMediaTime();
 
         CADisplayLink *displayLink;
         displayLink = [CADisplayLink displayLinkWithTarget:self
@@ -43,33 +43,33 @@
 
 - (void)drawView:(CADisplayLink *)displayLink {
     if (displayLink != nil) {
-        float elapsedSeconds = displayLink.timestamp - m_timestamp;
-        m_timestamp = displayLink.timestamp;
-        m_renderingEngine->UpdateAnimation(elapsedSeconds);
+        float elapsedSeconds = (float)(displayLink.timestamp - m_timestamp);
+        m_timestamp = (float)displayLink.timestamp;
+        m_renderingEngine->updateAnimation(elapsedSeconds);
     }
 
-    m_renderingEngine->Render();
+    m_renderingEngine->render();
     [m_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint location = [touch locationInView:self];
-    m_renderingEngine->OnFingerDown(ivec2(location.x, location.y));
+    m_renderingEngine->onFingerDown(ivec2((int) location.x, (int) location.y));
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint location = [touch locationInView:self];
-    m_renderingEngine->OnFingerUp(ivec2(location.x, location.y));
+    m_renderingEngine->onFingerUp(ivec2((int) location.x, (int) location.y));
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint previous = [touch previousLocationInView:self];
     CGPoint current = [touch locationInView:self];
-    m_renderingEngine->OnFingerMove(ivec2(previous.x, previous.y),
-                                    ivec2(current.x, current.y));
+    m_renderingEngine->onFingerMove(ivec2((int) previous.x, (int) previous.y),
+                                    ivec2((int) current.x, (int) current.y));
 }
 
 @end

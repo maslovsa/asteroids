@@ -15,6 +15,8 @@
 #include <vector>
 #include "vector.hpp"
 #include "Asteroid.h"
+#include "Bullet.h"
+#include "Ship.h"
 
 class Painter {
 public:
@@ -22,9 +24,9 @@ public:
 
     void drawAsteroid(const Asteroid *asteroid);
 
-    void drawShip(std::vector<Vertex> body, float angle, Jet state);
+    void drawShip(const Ship *ship);
 
-    void drawBullet(float x, float y);
+    void drawGameObject(const GameObject *gameObject);
 
     GLuint m_simpleProgram;
 };

@@ -22,9 +22,9 @@ class Ship : public GameObject {
 public:
     Ship();
 
-    void tick(Keys);
+    virtual void render(Painter &) const;
 
-    virtual void draw(Painter &) const;
+    void updateAnimation(Keys);
 
     void setAngel(float angle);
 

@@ -15,18 +15,17 @@
 
 class Painter;
 
+const int BULLET_SIZE = 14;
+
 class Bullet : public GameObject {
 
 public:
     Bullet();
 
-    //virtual ~Bullet();
-    void tick(vec2 acel);
+    virtual void render(Painter &) const;
 
-    virtual void draw(Painter &) const;
+    void updateAnimation(vec2 acc);
 
-    float vx;
-    float vy;
     int live;
 };
 

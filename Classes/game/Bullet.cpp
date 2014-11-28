@@ -4,32 +4,45 @@
 
 Bullet::Bullet()
             : live(0) {
+    size_ = BULLET_SIZE;
+    Vertex vertex;
+    vec4 color(1, 0, 0, 1);
+    vertex.Color = color;
+    vertex.Position = vec2(-size_ / 2, size_ / 2);
+    body.push_back(vertex);
+    vertex.Position = vec2(size_ / 2, size_ / 2);
+    body.push_back(vertex);
+    vertex.Position = vec2(size_ / 2, -size_ / 2);
+    body.push_back(vertex);
+    vertex.Position = vec2(-size_ / 2, -size_ / 2);
+    body.push_back(vertex);
 }
 
-//Bullet::~Bullet() {
-//    std::cout << "die bullet\n";
-//}
+void Bullet::updateAnimation(vec2 acc) {
+    auto width = Game::getInstance().getWidth();
+    auto height = Game::getInstance().getHeight();
+    auto delta = Game::getInstance().getDelta();
 
-void Bullet::tick(vec2 acel) {
-    vx += acel.x * Game::getInstance().DELTA_T / 1000.0f;
-    vy += acel.y * Game::getInstance().DELTA_T / 1000.0f;
-    position.x += vx * Game::getInstance().DELTA_T / 1000.0f;
-    position.y += vy * Game::getInstance().DELTA_T / 1000.0f;
-    if (position.x > Game::getInstance().WIDTH / 2) {
-        position.x -= Game::getInstance().WIDTH;
+    velocity.x += acc.x * delta / 1000.0f;
+    velocity.y += acc.y * delta / 1000.0f;
+    position.x += velocity.x * delta / 1000.0f;
+    position.y += velocity.y * delta / 1000.0f;
+    if (position.x > width / 2) {
+        position.x -= width;
     }
-    if (position.y > Game::getInstance().HEIGHT / 2) {
-        position.y -= Game::getInstance().HEIGHT;
+    if (position.y > height / 2) {
+        position.y -= height;
     }
-    if (position.x < -Game::getInstance().WIDTH / 2) {
-        position.x += Game::getInstance().WIDTH;
+    if (position.x < -width / 2) {
+        position.x += width;
     }
-    if (position.y < -Game::getInstance().HEIGHT / 2) {
-        position.y += Game::getInstance().HEIGHT;
+    if (position.y < -height / 2) {
+        position.y += height;
     }
-    live += Game::getInstance().DELTA_T;
+    live += delta;
+    angle_ += 3.0f * delta / 1000.0f;
 }
 
-void Bullet::draw(Painter &p) const {
-    p.drawBullet(position.x, position.y);
+void Bullet::render(Painter &p) const {
+    p.drawGameObject(this);
 }

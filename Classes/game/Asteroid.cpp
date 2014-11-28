@@ -1,47 +1,51 @@
 #include "Asteroid.h"
 #include "Game.h"
 #include "Painter.h"
+#include <iostream>
 
 Asteroid::Asteroid() {
     angle_ = rand() % 31400 / 1000.0f;
-    //    for (int i = 0; i < 5; ++i)
-    //glVertex2f(sin(2 * M_PI / 5 * i), cos(2 * M_PI / 5 * i));
+
+    vAngle = 0.3f;
     size_ = ASTEROID_SIZE;
     Vertex vertex;
     vec4 color(0, 1, 1, 1);
     vertex.Color = color;
-    vertex.Position = vec2(0, size_ / 2);
-    body.push_back(vertex);
-    vertex.Position = vec2(size_ / 3, -size_ / 4);
-    body.push_back(vertex);
-    vertex.Position = vec2(0, 0);
-    body.push_back(vertex);
-    vertex.Position = vec2(-size_ / 3, -size_ / 4);
-    body.push_back(vertex);
+    int vertexCount = 8 + rand() % 8;
+    for (int i = 0; i < vertexCount; ++i) {
+        float kFactor = (i % 3) ? (rand() % 5 + 5) / 10.f : 1.0f;
+        vertex.Position = vec2(sin(2 * M_PI / vertexCount * i) * ASTEROID_SIZE / 2 * kFactor,
+                               cos(2 * M_PI / vertexCount * i) * ASTEROID_SIZE / 2 * kFactor);
+        body.push_back(vertex);
+    }
 }
 
-void Asteroid::tick(vec2 acel) {
-    vx += acel.x * Game::getInstance().DELTA_T / 1000.0f;
-    vy += acel.y * Game::getInstance().DELTA_T / 1000.0f;
-    position.x += vx * Game::getInstance().DELTA_T / 1000.0f;
-    position.y += vy * Game::getInstance().DELTA_T / 1000.0f;
-    if (position.x > Game::getInstance().WIDTH / 2) {
-        position.x -= Game::getInstance().WIDTH;
+void Asteroid::updateAnimation(vec2 acc) {
+    auto width = Game::getInstance().getWidth();
+    auto height = Game::getInstance().getHeight();
+
+    velocity.x = std::max(std::min(velocity.x + acc.x, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX); //* delta / 1000.0f;
+    velocity.y = std::max(std::min(velocity.y + acc.y, ASTEROID_SPEED_MAX), -ASTEROID_SPEED_MAX);//* delta / 1000.0f;
+    position.x += velocity.x;//* delta / 1000.0f;
+    position.y += velocity.y;//* delta / 1000.0f;
+    if (position.x > width / 2) {
+        position.x -= width;
     }
-    if (position.y > Game::getInstance().HEIGHT / 2) {
-        position.y -= Game::getInstance().HEIGHT;
+    if (position.y > height / 2) {
+        position.y -= height;
     }
-    if (position.x < -Game::getInstance().WIDTH / 2) {
-        position.x += Game::getInstance().WIDTH;
+    if (position.x < -width / 2) {
+        position.x += width;
     }
-    if (position.y < -Game::getInstance().HEIGHT / 2) {
-        position.y += Game::getInstance().HEIGHT;
+    if (position.y < -height / 2) {
+        position.y += height;
     }
-    angle_ += 3.0f * Game::getInstance().DELTA_T / 1000.0f;
+    std::cout << position.x << " " << position.y << " speed " << velocity.x << ":" << velocity.y << "\n";
+    angle_ += vAngle;
 }
 
-void Asteroid::draw(Painter &p) const {
-    p.drawAsteroid(this);
+void Asteroid::render(Painter &p) const {
+    p.drawGameObject(this);
 }
 
 void Asteroid::setSize(float size) {

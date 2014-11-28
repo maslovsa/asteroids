@@ -8,14 +8,12 @@ Game::Game() {
 }
 
 Game::~Game() {
-    for (auto a : asteroids_) {
+    for (auto a: asteroids_) {
         delete a;
     }
-//    for (Asteroids::iterator i = asteroids_.begin(); i != asteroids_.end(); ++i)
-//        delete *i;
 }
 
-void Game::Initialize(int width, int height) {
+void Game::init(int width, int height) {
     WIDTH = width;
     HEIGHT = height;
     DELTA_T = 1000 / 10;
@@ -36,72 +34,84 @@ void Game::reset() {
     for (auto a : asteroids_) {
         delete a;
     }
-//    for (Asteroids::iterator i = asteroids_.begin(); i != asteroids_.end(); ++i) {
-//        delete *i;
-//    }
     asteroids_.clear();
+
     for (int i = 0; i < level_; ++i) {
         Asteroid *a = new Asteroid;
-        //a -> setSize(ASTEROID_SIZE);
         a->position.x = rand() % WIDTH - WIDTH / 2;
         a->position.y = rand() % HEIGHT - HEIGHT / 2;
-        a->vx = rand() % 40 - 20;
-        a->vy = rand() % 40 - 20;
+        a->velocity.x = 0.1f;
+        a->velocity.y = 0.1f;
         asteroids_.insert(a);
     }
 }
 
-void Game::draw(Painter &p) const {
-    ship_.draw(p);
+void Game::render(Painter &p) const {
+    ship_.render(p);
 
     for (auto b : bullets_) {
-        b.draw(p);
+        b.render(p);
     }
 
     for (auto a : asteroids_) {
-        a->draw(p);
+        a->render(p);
     }
 }
 
-void Game::tick(Keys keys) {
-    ship_.tick(keys);
-    float shipAngle = ship_.getAngle();
+float dist(const vec2 aPosition, const vec2 bPosition) {
+    return (float) sqrt((bPosition.x - aPosition.x) * (bPosition.x - aPosition.x)
+                                    + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
+}
+
+float distNormal(const vec2 aPosition) {
+    return (float) sqrt(aPosition.x * aPosition.x + aPosition.y * aPosition.y);
+}
+
+Keys myKeys;
+
+void Game::updateAnimation(float timeStep) {
+    Keys keys = myKeys;
+    ship_.updateAnimation(keys);
+
+    float shipAngle = ship_.getAngle();// * M_PI / 180;
     if (keys[KEY_FIRE] && (bullets_.size() == 0 || bullets_.back().live > 200)) {
         Bullet b;
-        b.vx = 100 * cos(shipAngle);
-        b.vy = 100 * sin(shipAngle);
+        b.velocity.x = 100 * cos(shipAngle);
+        b.velocity.y = 100 * sin(shipAngle);
         b.position.x = 20 * cos(shipAngle);
         b.position.y = 20 * sin(shipAngle);
         bullets_.push_back(b);
     };
 
     vec2 v = vec2(0, 0);
-
+    float accelerate = 1.0f;
     if (keys[KEY_UP]) {
-        v.x = -200 * cos(shipAngle);
-        v.y = -200 * sin(shipAngle);
+        v.x = -accelerate * sin(shipAngle);
+        v.y = -accelerate * cos(shipAngle);
+        std::cout << "ACC+" << v.x << " " << v.y << "\n";
     }
-    if (keys[KEY_DOWN]) {
-        v.x = 200 * cos(shipAngle);
-        v.y = 200 * sin(shipAngle);
-    }
+//    if (keys[KEY_DOWN]) {
+//        v.x = accelerate * sin(shipAngle);
+//        v.y = accelerate * cos(shipAngle);
+//        std::cout << "ACC-" << v.x << " " << v.y << "\n";
+//    }
 
-    for (auto b : bullets_) {
-        b.tick(v);
+    for (auto b: bullets_) {
+        b.updateAnimation(v);
     }
-    for (auto a : asteroids_) {
-        a->tick(v);
+    for (auto a: asteroids_) {
+        a->updateAnimation(v);
     }
 
 //    for (Asteroids::const_iterator a = asteroids_.begin(); a != asteroids_.end(); ++a)
 //        for (Bullets::iterator b = bullets_.begin(); b != bullets_.end(); ++b)
 //        {
-//            float d = sqrt((b -> x - (*a) ->position.x) * (b -> x - (*a) ->position.x) + (b -> y - (*a) ->position.y) * (b -> y - (*a) ->position.y));
-//            if (d < ((*a) -> getSize() + 1.5))
+//            float d = dist((*a)->position, b->position);
+//            if (d < ((*a)->getSize() + 1.5))
 //            {
-//                if ((*a) -> getSize() > 8)
+//                if ((*a)->getSize() > 8)
 //                {
-//                    (*a) -> setSize((*a) -> getSize() / 1.414);
+//                    (*a)->setSize((*a) -> getSize() / 1.414);
 //                    Asteroid *aa = new Asteroid(**a);
 //                    aa -> vx += rand() % 20 - 20;
 //                    aa -> vy += rand() % 20 - 20;
@@ -123,7 +133,7 @@ void Game::tick(Keys keys) {
 //        }
 //    a:
 //    for (Asteroids::const_iterator a = asteroids_.begin(); a != asteroids_.end(); ++a)  {
-//        float d = sqrt((*a) ->position.x * (*a)->position.x + (*a) ->position.y * (*a) ->position.y);
+//        float d = distNormal((*a)->position);
 //        if (d < ((*a) -> getSize() + 15))
 //        {
 //            reset();
@@ -132,38 +142,48 @@ void Game::tick(Keys keys) {
 //    }
 //    while (bullets_.size() != 0 && bullets_.front().live > 3000)
 //        bullets_.pop_front();
+    myKeys.reset();
 }
 
-void Game::OnFingerUp(ivec2 location) {
+void Game::onFingerUp(ivec2 location) {
     //std::cout << "UP "<< location.x << " " << location.y << "\n";
 }
 
-void Game::OnFingerDown(ivec2 location) {
-    std::cout << "DO " << location.x << " " << location.y << "\n";
+void Game::onFingerDown(ivec2 location) {
     if (location.y > shotZone) {
-        std::cout << "FIRE!!! \n";
-        Keys keys;
-        keys.set(KEY_FIRE);
-        tick(keys);
+        //std::cout << "FIRE!!! \n";
+        if (location.x < WIDTH / 3) {
+            myKeys.set(KEY_UP);
+        } else if (location.x < WIDTH / 2 * 3) {
+            myKeys.set(KEY_DOWN);
+        } else {
+            myKeys.set(KEY_FIRE);
+        }
+
+    } else {
+        vec2 direction = vec2(location - m_pivotPoint).Normalized();
+        direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
+        float m_rotationAngle = (float) (std::acos(direction.y) * 180.0f * M_1_PI);
+        if (direction.x > 0) {
+            m_rotationAngle = -m_rotationAngle;
+        }
+        ship_.setAngel(m_rotationAngle);
     }
 }
 
-void Game::OnFingerMove(ivec2 previous, ivec2 location) {
-    if (location.y > shotZone) {
-        return;
-    }
-    vec2 direction = vec2(location - m_pivotPoint).Normalized();
-    direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
-    float m_rotationAngle = std::acos(direction.y) * 180.0f / 3.14159f;
-    if (direction.x > 0) {
-        m_rotationAngle = -m_rotationAngle;
-    }
-    ship_.setAngel(m_rotationAngle);
-    Keys keys;
-    keys.set(KEY_UP);
-    ship_.tick(keys);
+void Game::onFingerMove(ivec2 previous, ivec2 location) {
+//    if (location.y > shotZone) {
+//        return;
+//    }
+//    vec2 direction = vec2(location - m_pivotPoint).Normalized();
+//    direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
+//    float m_rotationAngle = std::acos(direction.y) * 180.0f * M_1_PI;
+//    if (direction.x > 0) {
+//        m_rotationAngle = -m_rotationAngle;
+//    }
+//    ship_.setAngel(m_rotationAngle);
+//
+
 }
 
-int Game::getLevel() const {
-    return level_;
-}
+

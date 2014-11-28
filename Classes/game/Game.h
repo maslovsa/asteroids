@@ -28,23 +28,26 @@ public:
         return instance;
     }
 
-    int WIDTH;
-    int HEIGHT;
-    int DELTA_T;
+    int getWidth() const {
+        return WIDTH;
+    }
+    int getHeight() const {
+        return HEIGHT;
+    }
+    int getDelta() const {
+        return DELTA_T;
+    }
+    void init(int width, int height);
 
-    void Initialize(int width, int height);
+    void render(Painter &p) const;
 
-    void draw(Painter &p) const;
+    void updateAnimation(float timeStep);
 
-    void tick(Keys);
+    void onFingerUp(ivec2 location);
 
-    int getLevel() const;
+    void onFingerDown(ivec2 location);
 
-    void OnFingerUp(ivec2 location);
-
-    void OnFingerDown(ivec2 location);
-
-    void OnFingerMove(ivec2 oldLocation, ivec2 newLocation);
+    void onFingerMove(ivec2 oldLocation, ivec2 newLocation);
 
 private:
     Game();
@@ -57,6 +60,10 @@ private:
 
     void reset();
 
+private:
+    int WIDTH;
+    int HEIGHT;
+    int DELTA_T;
     Ship ship_;
     Bullets bullets_;
     Asteroids asteroids_;

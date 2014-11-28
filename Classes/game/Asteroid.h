@@ -15,21 +15,19 @@
 class Painter;
 
 const int ASTEROID_SIZE = 64;
+const float ASTEROID_SPEED_MAX = 10.0f;
 
 class Asteroid : public GameObject {
 public:
     Asteroid();
 
-    void tick(vec2 acel);
+    virtual void render(Painter &) const;
 
-    virtual void draw(Painter &) const;
+    void updateAnimation(vec2 acc);
 
     void setSize(float size);
 
-    float vx;
-    float vy;
-//    float x;
-//    float y;
+    float vAngle;
 private:
 
 };
