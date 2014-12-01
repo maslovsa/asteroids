@@ -1,11 +1,12 @@
 #include "Game.h"
 #include <iostream>
 
-const float kFireZonePercentage = 85;
 const float CONTROL_Y_PER_HEIGHT = 0.9f;
-const int BULLET_VELOCITY_FACTOR = 6;
+const float BULLET_VELOCITY_FACTOR = 6;
 const float COLLISION_VELOCITY_IMPROVEMENT = 1.3f;
-const float SHIP_ACCELERATE = 10;
+const float SHIP_ACCELERATE = 5;
+const float SHIP_ACCELERATE_FACTOR = 0.95;
+const float SHIP_ACCELERATE_DURATION = 20.f;
 
 Game::Game() {
 
@@ -37,7 +38,7 @@ void Game::init(int _width, int _height) {
     level_ = 1;
     m_pivotPoint.x = width / 2;
     m_pivotPoint.y = height / 2;
-    shotZone = kFireZonePercentage / 100 * height;
+
     reset();
 }
 
@@ -78,8 +79,6 @@ void Game::render(Painter &p) const {
     keyFire.render(p);
 }
 
-
-
 float dist(const vec2 aPosition, const vec2 bPosition) {
     return (float) sqrt((bPosition.x - aPosition.x) * (bPosition.x - aPosition.x)
                         + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
@@ -96,7 +95,6 @@ void Game::updateAnimation(float timeStep) {
     keyUp.updateAnimation(keys);
     keyDown.updateAnimation(keys);
     keyFire.updateAnimation(keys);
-    ship.updateAnimation(keys);
     
     if (keys[KEY_FIRE]) {
         Bullet *b = new Bullet;
@@ -109,19 +107,28 @@ void Game::updateAnimation(float timeStep) {
 
     vec2 v = vec2(0, 0);
     if (myKeys[KEY_UP] || myKeys[KEY_DOWN]) {
-        currentDuration = 0.5f;
+        currentDuration = SHIP_ACCELERATE_DURATION;
         v.x = (myKeys[KEY_DOWN] ? 1 : -1) * SHIP_ACCELERATE * ship.direction.x;
         v.y = (myKeys[KEY_DOWN] ? 1 : -1) * SHIP_ACCELERATE * ship.direction.y;
+        oldKeys = myKeys;
         currentVelocity = v;
+    } else {
+        if (--currentDuration > 0) {
+            std::cout << currentVelocity.x << currentVelocity.y << "\n";
+            if (currentDuration > SHIP_ACCELERATE_DURATION / 2) {
+                v.x = currentVelocity.x * currentDuration / SHIP_ACCELERATE_DURATION / 2;
+                v.y = currentVelocity.y * currentDuration / SHIP_ACCELERATE_DURATION / 2;
+            } else {
+                currentVelocity.x *= SHIP_ACCELERATE_FACTOR;
+                currentVelocity.y *= SHIP_ACCELERATE_FACTOR;
+                v = currentVelocity;
+            }
+            myKeys = oldKeys;
+        }
     }
-    if (currentDuration > 0) {
-        std::cout << currentVelocity.x << currentVelocity.y << "\n";
-        currentDuration -= timeStep;
-        currentVelocity.x *= 0.9;
-        currentVelocity.y *= 0.9;
-        v = currentVelocity;
-    }
-
+    
+    ship.updateAnimation(myKeys);
+    
     for (auto b: bullets) {
         b->updateAnimation(v);
     }
@@ -129,6 +136,14 @@ void Game::updateAnimation(float timeStep) {
     for (auto a: asteroids) {
         a->updateAnimation(v);
     }
+    
+    checkColliders();
+
+    myKeys.reset();
+}
+
+
+void Game::checkColliders(){
     bool isCollision = false;
     for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end();) {
         for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
@@ -166,8 +181,7 @@ void Game::updateAnimation(float timeStep) {
         if (isCollision)
             break;
     }
-
-
+    
     for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end(); ++a) {
         float d = distNormal((*a)->position);
         if (d < ((*a)->getSize() - 1)) {
@@ -177,7 +191,7 @@ void Game::updateAnimation(float timeStep) {
             return;
         }
     }
-
+    
     for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
         if (!(*b)->isLive) {
             delete *b;
@@ -186,13 +200,9 @@ void Game::updateAnimation(float timeStep) {
             ++b;
         }
     }
-
-//    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet &b) -> bool{
-//        return !b.isLive;
-//    }), bullets.end());
-
-    //        {
-    myKeys.reset();
+    //    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet &b) -> bool{
+    //        return !b.isLive;
+    //    }), bullets.end());
 }
 
 void Game::onFingerUp(ivec2 location) {

@@ -28,9 +28,10 @@ public:
     void setAngel(float angle);
 
     vec2 direction;
-
-protected:
+    
     Jet jet_;
+protected:
+ 
 };
 
 #endif

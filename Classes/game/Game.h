@@ -56,6 +56,8 @@ private:
 
     void reset();
     
+    void checkColliders();
+    
     void calculateCollidersVelocity(vec2 &a, vec2 &b);
 private:
     int width;
@@ -72,6 +74,7 @@ private:
     int level_;
     vec2 currentVelocity;
     float currentDuration;
+    Keys oldKeys;
 };
 
 #endif
