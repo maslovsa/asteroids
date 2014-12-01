@@ -5,6 +5,7 @@ const float kFireZonePercentage = 85;
 const float CONTROL_Y_PER_HEIGHT = 0.9f;
 const int BULLET_VELOCITY_FACTOR = 6;
 const float COLLISION_VELOCITY_IMPROVEMENT = 1.3f;
+const float SHIP_ACCELERATE = 10;
 
 Game::Game() {
 
@@ -107,14 +108,18 @@ void Game::updateAnimation(float timeStep) {
     };
 
     vec2 v = vec2(0, 0);
-    float accelerate = 10.0f;
-    if (keys[KEY_UP]) {
-        v.x = -accelerate * ship.direction.x;
-        v.y = -accelerate * ship.direction.y;
+    if (myKeys[KEY_UP] || myKeys[KEY_DOWN]) {
+        currentDuration = 0.5f;
+        v.x = (myKeys[KEY_DOWN] ? 1 : -1) * SHIP_ACCELERATE * ship.direction.x;
+        v.y = (myKeys[KEY_DOWN] ? 1 : -1) * SHIP_ACCELERATE * ship.direction.y;
+        currentVelocity = v;
     }
-    if (keys[KEY_DOWN]) {
-        v.x = accelerate * ship.direction.x;
-        v.y = accelerate * ship.direction.y;
+    if (currentDuration > 0) {
+        std::cout << currentVelocity.x << currentVelocity.y << "\n";
+        currentDuration -= timeStep;
+        currentVelocity.x *= 0.9;
+        currentVelocity.y *= 0.9;
+        v = currentVelocity;
     }
 
     for (auto b: bullets) {

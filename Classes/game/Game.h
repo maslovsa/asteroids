@@ -70,7 +70,8 @@ private:
     Control keyDown;
     Control keyFire;
     int level_;
-
+    vec2 currentVelocity;
+    float currentDuration;
 };
 
 #endif

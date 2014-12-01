@@ -22,7 +22,7 @@ Bullet::Bullet()
 void Bullet::updateAnimation(vec2 acc) {
     auto width = Game::getInstance().getWidth();
     auto height = Game::getInstance().getHeight();
-
+    
     position.x += velocity.x + acc.x;
     position.y += velocity.y + acc.y;
     if (position.x > width ) {
