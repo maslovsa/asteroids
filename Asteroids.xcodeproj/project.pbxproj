@@ -24,6 +24,7 @@
 		8F59A94D1A27109F00116560 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F59A9401A27109F00116560 /* Game.cpp */; };
 		8F59A9501A27109F00116560 /* Painter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F59A9461A27109F00116560 /* Painter.cpp */; };
 		8F59A9511A27109F00116560 /* Ship.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F59A9481A27109F00116560 /* Ship.cpp */; };
+		8FD58C781A2C73D600E6E7AD /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD58C761A2C73D600E6E7AD /* Control.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,8 @@
 		8F59A9481A27109F00116560 /* Ship.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ship.cpp; sourceTree = "<group>"; };
 		8F59A9491A27109F00116560 /* Ship.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ship.h; sourceTree = "<group>"; };
 		8F59A9521A27537300116560 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
+		8FD58C761A2C73D600E6E7AD /* Control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
+		8FD58C771A2C73D600E6E7AD /* Control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		8FED84571A25C7EA00789BC5 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
 		8FED84581A25C7EA00789BC5 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
 		8FED84591A25C7EA00789BC5 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
@@ -174,6 +177,8 @@
 				8F59A9481A27109F00116560 /* Ship.cpp */,
 				8F59A9491A27109F00116560 /* Ship.h */,
 				10800806E283D3209046A50A /* Entities.h */,
+				8FD58C761A2C73D600E6E7AD /* Control.cpp */,
+				8FD58C771A2C73D600E6E7AD /* Control.h */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -260,6 +265,7 @@
 				8F59A9511A27109F00116560 /* Ship.cpp in Sources */,
 				8F59A9371A26F3B400116560 /* ShaderHelper.cpp in Sources */,
 				4D8FB3730F9EC1010055EDDB /* main.m in Sources */,
+				8FD58C781A2C73D600E6E7AD /* Control.cpp in Sources */,
 				8F59A94B1A27109F00116560 /* Asteroid.cpp in Sources */,
 				8F59A9501A27109F00116560 /* Painter.cpp in Sources */,
 			);

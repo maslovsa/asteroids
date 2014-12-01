@@ -31,12 +31,13 @@ public:
     std::vector<Vertex> body;
     vec2 position;
     vec2 velocity;
-    float size;
+
     float scale;
     float vAngle;
 
 protected:
     float angle_;
+    float size;
 };
 
 #endif

@@ -7,15 +7,15 @@ Asteroid::Asteroid() {
     angle_ = rand() % 31400 / 1000.0f;
     vAngle = 0.3f;
     scale = 1.0f;
-    size = ASTEROID_SIZE;
+    size = Game::getInstance().getWidth() / 10;
     Vertex vertex;
     vec4 color(0, 1, 1, 1);
     vertex.Color = color;
     int vertexCount = 8 + rand() % 8;
     for (int i = 0; i < vertexCount; ++i) {
         float kFactor = (i % 3) ? (rand() % 5 + 5) / 10.f : 1.0f;
-        MakePoint(sin(2 * M_PI / vertexCount * i) * ASTEROID_SIZE / 2 * kFactor,
-                  cos(2 * M_PI / vertexCount * i) * ASTEROID_SIZE / 2 * kFactor);
+        MakePoint(sin(2 * M_PI / vertexCount * i) * size / 2 * kFactor,
+                  cos(2 * M_PI / vertexCount * i) * size / 2 * kFactor);
     }
 }
 
@@ -38,7 +38,6 @@ void Asteroid::updateAnimation(vec2 acc) {
     if (position.y < -height ) {
         position.y = height;
     }
-    //std::cout << position.x << " " << position.y << " speed " << velocity.x << ":" << velocity.y << "\n";
     angle_ += vAngle;
 }
 
@@ -47,6 +46,6 @@ void Asteroid::render(Painter &p) const {
 }
 
 void Asteroid::setSize(float _size) {
-    scale =  _size / ASTEROID_SIZE;
+    scale =  _size / size;
     size = _size;
 }

@@ -6,7 +6,7 @@
 
 Bullet::Bullet()
             : isLive(true) {
-    size = BULLET_SIZE;
+    size = Game::getInstance().getWidth() / 10 / 8;
     vAngle = 0.9f;
     scale = 1.0f;
     Vertex vertex;
@@ -36,9 +36,6 @@ void Bullet::updateAnimation(vec2 acc) {
     }
     if (position.y < -height) {
         isLive = false;
-    }
-    if (!isLive) {
-        std::cout << "now erase \n";
     }
     angle_ += vAngle;
 }

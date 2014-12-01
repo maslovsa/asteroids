@@ -14,13 +14,13 @@
 
 class Painter;
 
-const int SHIP_SIZE = 30;
-
 class Ship : public GameObject {
 
 public:
     Ship();
-
+    
+    void init();
+    
     virtual void render(Painter &) const;
 
     void updateAnimation(Keys);

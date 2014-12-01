@@ -12,6 +12,7 @@
 #include "Ship.h"
 #include "Bullet.h"
 #include "Asteroid.h"
+#include "Control.h"
 
 class Painter;
 
@@ -65,7 +66,11 @@ private:
     Ship ship;
     Bullets bullets;
     Asteroids asteroids;
+    Control keyUp;
+    Control keyDown;
+    Control keyFire;
     int level_;
+
 };
 
 #endif

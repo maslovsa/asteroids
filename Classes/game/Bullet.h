@@ -13,8 +13,6 @@
 
 class Painter;
 
-const int BULLET_SIZE = 4;
-
 class Bullet : public GameObject {
 
 public:

@@ -3,13 +3,16 @@
 #include "Game.h"
 
 Ship::Ship() {
-    size = SHIP_SIZE;
+}
+
+void Ship::init() {
+    angle_ = 0;
+    size = Game::getInstance().getWidth() / 10;
     scale = 1.0f;
     Vertex vertex;
+    direction = vec2(0,1);
 
-    vec4 color(1, 1, 1, 1);
-    vertex.Color = color;
-
+    vertex.Color = vec4(1, 1, 1, 1);
     MakePoint(0, size / 2);
     MakePoint(size / 3, -size / 4);
     MakePoint(0, 0);

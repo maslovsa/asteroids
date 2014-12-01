@@ -1,9 +1,10 @@
 #include "Game.h"
 #include <iostream>
 
-static float kFireZonePercentage = 85;
-const int BULLET_VELOCITY_FACTOR = 2;
-const float COLLISION_VELOCITY_IMPROVEMENT = 1.2f;
+const float kFireZonePercentage = 85;
+const float CONTROL_Y_PER_HEIGHT = 0.9f;
+const int BULLET_VELOCITY_FACTOR = 6;
+const float COLLISION_VELOCITY_IMPROVEMENT = 1.3f;
 
 Game::Game() {
 
@@ -18,7 +19,20 @@ Game::~Game() {
 void Game::init(int _width, int _height) {
     width = _width;
     height = _height;
-
+    
+    ship.init();
+    
+    keyUp.init(KEY_UP);
+    keyDown.init(KEY_DOWN);
+    keyFire.init(KEY_FIRE);
+    
+    keyUp.position.x =  -width + 1*width / 3;
+    keyUp.position.y = -height * CONTROL_Y_PER_HEIGHT;
+    keyDown.position.x = 0;
+    keyDown.position.y = -height * CONTROL_Y_PER_HEIGHT;
+    keyFire.position.x = width - 1*width / 3;
+    keyFire.position.y = -height * CONTROL_Y_PER_HEIGHT;
+    
     level_ = 1;
     m_pivotPoint.x = width / 2;
     m_pivotPoint.y = height / 2;
@@ -57,11 +71,17 @@ void Game::render(Painter &p) const {
     for (auto b : bullets) {
         b->render(p);
     }
+    
+    keyUp.render(p);
+    keyDown.render(p);
+    keyFire.render(p);
 }
+
+
 
 float dist(const vec2 aPosition, const vec2 bPosition) {
     return (float) sqrt((bPosition.x - aPosition.x) * (bPosition.x - aPosition.x)
-                                    + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
+                        + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
 }
 
 float distNormal(const vec2 aPosition) {
@@ -72,15 +92,17 @@ Keys myKeys;
 
 void Game::updateAnimation(float timeStep) {
     Keys keys = myKeys;
-
+    keyUp.updateAnimation(keys);
+    keyDown.updateAnimation(keys);
+    keyFire.updateAnimation(keys);
     ship.updateAnimation(keys);
+    
     if (keys[KEY_FIRE]) {
-        std::cout << "FIRE!!! \n";
         Bullet *b = new Bullet;
         b->velocity.x = ship.direction.x * BULLET_VELOCITY_FACTOR;
         b->velocity.y = ship.direction.y * BULLET_VELOCITY_FACTOR;
-        b->position.x = ship.size * ship.direction.x;
-        b->position.y = ship.size * ship.direction.y;
+        b->position.x = ship.getSize() * ship.direction.x;
+        b->position.y = ship.getSize() * ship.direction.y;
         bullets.push_back(b);
     };
 
@@ -89,12 +111,10 @@ void Game::updateAnimation(float timeStep) {
     if (keys[KEY_UP]) {
         v.x = -accelerate * ship.direction.x;
         v.y = -accelerate * ship.direction.y;
-        std::cout << "ACC+ :" << v.x << " " << v.y << "\n";
     }
     if (keys[KEY_DOWN]) {
         v.x = accelerate * ship.direction.x;
         v.y = accelerate * ship.direction.y;
-        std::cout << "ACC- :" << v.x << " " << v.y << "\n";
     }
 
     for (auto b: bullets) {
@@ -108,12 +128,10 @@ void Game::updateAnimation(float timeStep) {
     for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end();) {
         for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
             float d = dist((*a)->position, (*b)->position);
-            std::cout << d <<  " to be "<< (*a)->getSize() + (*b)->getSize() << "\n";
             if (d < ((*a)->getSize() + (*b)->getSize())) {
-                if ((*a)->getSize() > ASTEROID_SIZE / 2) {
-                    (*a)->setSize(ASTEROID_SIZE / 2);
+                if ((*a)->isBig()) {
+                    (*a)->setSize((*a)->getSize() / 2);
                     Asteroid *aa = new Asteroid(**a);
-                    aa->setSize(ASTEROID_SIZE / 2);
                     calculateCollidersVelocity((*a)->velocity, aa->velocity);
                     asteroids.push_back(aa);
                     delete *b;
@@ -125,7 +143,7 @@ void Game::updateAnimation(float timeStep) {
                     
                     delete *b;
                     bullets.erase(b);
-                    if (asteroids.size() == 0) {
+                    if (asteroids.empty()) {
                         ++level_;
                         reset();
                         return;
@@ -178,16 +196,22 @@ void Game::onFingerUp(ivec2 location) {
 
 void Game::onFingerDown(ivec2 location) {
     std::cout << "CLICK " << location.x << " " << location.y << "\n";
-    if (location.y > shotZone) {
-        if (location.x < width / 3) {
-            myKeys.set(KEY_UP);
-        } else if (location.x < width / 3 * 2) {
-            myKeys.set(KEY_DOWN);
-        } else {
-            myKeys.set(KEY_FIRE);
-        }
-
-    } else {
+    bool isControlClicked = false;
+    
+    if(keyUp.isClicked(location)) {
+        myKeys.set(KEY_UP);
+        isControlClicked = true;
+    }
+    if(keyDown.isClicked(location)) {
+        myKeys.set(KEY_DOWN);
+        isControlClicked = true;
+    }
+    if(keyFire.isClicked(location)) {
+        myKeys.set(KEY_FIRE);
+        isControlClicked = true;
+    }
+    
+    if (!isControlClicked) {
         vec2 direction = vec2(location - m_pivotPoint).Normalized();
         direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
         float m_rotationAngle = (float) (std::acos(direction.y) * 180.0f * M_1_PI);

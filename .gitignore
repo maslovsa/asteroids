@@ -1,0 +1,11 @@
+atlassian-ide-plugin.xml
+*.xcworkspace
+xcuserdata
+.DS_Store
+.commit
+.list
+*.iws
+.idea
+*.ipr
+*.iml
+*.swf

@@ -13,8 +13,6 @@
 
 class Painter;
 
-const int ASTEROID_SIZE = 32;
-
 class Asteroid : public GameObject {
 public:
     Asteroid();
@@ -24,7 +22,11 @@ public:
     void updateAnimation(vec2 acc);
 
     void setSize(float size);
-
+    
+    inline bool isBig() {
+        return scale >= 1;
+    }
+    
 private:
 
 };
