@@ -24,19 +24,19 @@ public:
     }
 
     float getSize() const {
-        return size_;
+        return size;
     }
-    
+
 public:
     std::vector<Vertex> body;
     vec2 position;
     vec2 velocity;
-    float size_;
+    float size;
+    float scale;
     float vAngle;
-    
+
 protected:
-    float angle_; // radians
-    
+    float angle_;
 };
 
 #endif

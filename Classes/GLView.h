@@ -7,7 +7,7 @@
     IRenderingEngine* m_renderingEngine;
     float m_timestamp;
 }
-
+- (void) didRotate: (NSNotification*) notification;
 - (void) drawView: (CADisplayLink*) displayLink;
 
 @end

@@ -9,7 +9,6 @@
 #ifndef Asteroids_Painter_h
 #define Asteroids_Painter_h
 
-#include "jet.hpp"
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #include <vector>
@@ -21,8 +20,6 @@
 class Painter {
 public:
     Painter(GLuint program);
-
-    //void drawAsteroid(const Asteroid *asteroid);
 
     void drawShip(const Ship *ship);
 

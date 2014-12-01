@@ -1,25 +1,19 @@
 #include "Ship.h"
 #include "Painter.h"
-
-#define _USE_MATH_DEFINES
-
 #include "Game.h"
 
 Ship::Ship() {
-    size_ = SHIP_SIZE;
+    size = SHIP_SIZE;
+    scale = 1.0f;
     Vertex vertex;
 
     vec4 color(1, 1, 1, 1);
     vertex.Color = color;
 
-    vertex.Position = vec2(0, size_ / 2);
-    body.push_back(vertex);
-    vertex.Position = vec2(size_ / 3, -size_ / 4);
-    body.push_back(vertex);
-    vertex.Position = vec2(0, 0);
-    body.push_back(vertex);
-    vertex.Position = vec2(-size_ / 3, -size_ / 4);
-    body.push_back(vertex);
+    MakePoint(0, size / 2);
+    MakePoint(size / 3, -size / 4);
+    MakePoint(0, 0);
+    MakePoint(-size / 3, -size / 4);
 }
 
 void Ship::updateAnimation(Keys keys) {

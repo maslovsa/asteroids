@@ -10,8 +10,6 @@
 #define Asteroids_Bullet_h
 
 #include "GameObject.h"
-#include "keys.hpp"
-#include "jet.hpp"
 
 class Painter;
 
@@ -26,8 +24,6 @@ public:
 
     void updateAnimation(vec2 acc);
 
-    int live;
-    
     bool isLive;
 };
 

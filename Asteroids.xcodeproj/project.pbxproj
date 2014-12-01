@@ -27,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		10800806E283D3209046A50A /* Entities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entities.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AsteroidsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsteroidsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AsteroidsAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AsteroidsAppDelegate.mm; sourceTree = "<group>"; };
@@ -54,8 +55,6 @@
 		8F59A93F1A27109F00116560 /* Bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bullet.h; sourceTree = "<group>"; };
 		8F59A9401A27109F00116560 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
 		8F59A9411A27109F00116560 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		8F59A9421A27109F00116560 /* jet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jet.hpp; sourceTree = "<group>"; };
-		8F59A9431A27109F00116560 /* keys.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = keys.hpp; sourceTree = "<group>"; };
 		8F59A9461A27109F00116560 /* Painter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Painter.cpp; sourceTree = "<group>"; };
 		8F59A9471A27109F00116560 /* Painter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Painter.h; sourceTree = "<group>"; };
 		8F59A9481A27109F00116560 /* Ship.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ship.cpp; sourceTree = "<group>"; };
@@ -170,12 +169,11 @@
 				8F59A9401A27109F00116560 /* Game.cpp */,
 				8F59A9411A27109F00116560 /* Game.h */,
 				8F59A9521A27537300116560 /* GameObject.h */,
-				8F59A9421A27109F00116560 /* jet.hpp */,
-				8F59A9431A27109F00116560 /* keys.hpp */,
 				8F59A9461A27109F00116560 /* Painter.cpp */,
 				8F59A9471A27109F00116560 /* Painter.h */,
 				8F59A9481A27109F00116560 /* Ship.cpp */,
 				8F59A9491A27109F00116560 /* Ship.h */,
+				10800806E283D3209046A50A /* Entities.h */,
 			);
 			path = game;
 			sourceTree = "<group>";

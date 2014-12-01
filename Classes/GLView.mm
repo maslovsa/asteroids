@@ -37,8 +37,22 @@
 
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop]
                           forMode:NSDefaultRunLoopMode];
+        
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(didRotate:)
+         name:UIDeviceOrientationDidChangeNotification
+         object:nil];
     }
     return self;
+}
+
+- (void) didRotate: (NSNotification*) notification {
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    //m_renderingEngine->OnRotate((DeviceOrientation) orientation);
+    //[self drawView: nil];
 }
 
 - (void)drawView:(CADisplayLink *)displayLink {

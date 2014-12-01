@@ -9,7 +9,6 @@
 #ifndef Asteroids_Game_h
 #define Asteroids_Game_h
 
-#include "keys.hpp"
 #include "Ship.h"
 #include "Bullet.h"
 #include "Asteroid.h"
@@ -27,14 +26,12 @@ public:
     }
 
     int getWidth() const {
-        return WIDTH;
+        return width;
     }
     int getHeight() const {
-        return HEIGHT;
+        return height;
     }
-    int getDelta() const {
-        return DELTA_T;
-    }
+
     void init(int width, int height);
 
     void render(Painter &p) const;
@@ -57,17 +54,18 @@ private:
     ~Game();
 
     void reset();
-
+    
+    void calculateCollidersVelocity(vec2 &a, vec2 &b);
 private:
-    int WIDTH;
-    int HEIGHT;
-    int DELTA_T;
-    Ship ship_;
-    Bullets bullets_;
-    Asteroids asteroids_;
-    int level_;
+    int width;
+    int height;
     ivec2 m_pivotPoint;
     float shotZone;
+
+    Ship ship;
+    Bullets bullets;
+    Asteroids asteroids;
+    int level_;
 };
 
 #endif

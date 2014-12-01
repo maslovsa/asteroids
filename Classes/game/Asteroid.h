@@ -10,12 +10,10 @@
 #define Asteroids_Asteroid_h
 
 #include "GameObject.h"
-#include "keys.hpp"
 
 class Painter;
 
 const int ASTEROID_SIZE = 32;
-const float ASTEROID_SPEED_MAX = 5.0f;
 
 class Asteroid : public GameObject {
 public:
@@ -26,7 +24,6 @@ public:
     void updateAnimation(vec2 acc);
 
     void setSize(float size);
-
 
 private:
 

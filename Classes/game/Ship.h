@@ -10,8 +10,7 @@
 #define Asteroids_Ship_h
 
 #include "GameObject.h"
-#include "keys.hpp"
-#include "jet.hpp"
+#include "Entities.h"
 
 class Painter;
 
@@ -27,7 +26,9 @@ public:
     void updateAnimation(Keys);
 
     void setAngel(float angle);
+
     vec2 direction;
+
 protected:
     Jet jet_;
 };
