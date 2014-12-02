@@ -29,6 +29,7 @@ public:
     int getWidth() const {
         return width;
     }
+
     int getHeight() const {
         return height;
     }
@@ -55,25 +56,29 @@ private:
     ~Game();
 
     void reset();
-    
+
     void checkColliders();
-    
+
     void calculateCollidersVelocity(vec2 &a, vec2 &b);
+
 private:
+    // viewport
     int width;
     int height;
-    ivec2 m_pivotPoint;
-    float shotZone;
+    ivec2 pivotPoint;
 
+    // Ship-Player Info
+    int level;
+    vec2 currentVelocity;
+    float currentDuration;
+
+    // GameObjects
     Ship ship;
     Bullets bullets;
     Asteroids asteroids;
-    Control keyUp;
-    Control keyDown;
-    Control keyFire;
-    int level_;
-    vec2 currentVelocity;
-    float currentDuration;
+    Control controlUp;
+    Control controlDown;
+    Control controlFire;
     Keys oldKeys;
 };
 

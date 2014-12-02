@@ -22,11 +22,11 @@ public:
     void updateAnimation(vec2 acc);
 
     void setSize(float size);
-    
+
     inline bool isBig() {
         return scale >= 1;
     }
-    
+
 private:
 
 };

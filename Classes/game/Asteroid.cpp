@@ -4,7 +4,7 @@
 #include <iostream>
 
 Asteroid::Asteroid() {
-    angle_ = rand() % 31400 / 1000.0f;
+    angle = rand() % 31400 / 1000.0f;
     vAngle = 0.3f;
     scale = 1.0f;
     size = Game::getInstance().getWidth() / 10;
@@ -38,7 +38,7 @@ void Asteroid::updateAnimation(vec2 acc) {
     if (position.y < -height ) {
         position.y = height;
     }
-    angle_ += vAngle;
+    angle += vAngle;
 }
 
 void Asteroid::render(Painter &p) const {

@@ -26,10 +26,10 @@
                     renderbufferStorage:GL_RENDERBUFFER
                            fromDrawable:eaglLayer];
 
-        m_renderingEngine->init((int)CGRectGetWidth(frame),(int) CGRectGetHeight(frame));
+        m_renderingEngine->init((int) CGRectGetWidth(frame), (int) CGRectGetHeight(frame));
         NSLog(@"w=%f h=%f", CGRectGetWidth(frame), CGRectGetHeight(frame));
         [self drawView:nil];
-        m_timestamp = (float)CACurrentMediaTime();
+        m_timestamp = (float) CACurrentMediaTime();
 
         CADisplayLink *displayLink;
         displayLink = [CADisplayLink displayLinkWithTarget:self
@@ -37,28 +37,15 @@
 
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop]
                           forMode:NSDefaultRunLoopMode];
-        
-        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-        
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(didRotate:)
-         name:UIDeviceOrientationDidChangeNotification
-         object:nil];
+
     }
     return self;
 }
 
-- (void) didRotate: (NSNotification*) notification {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    //m_renderingEngine->OnRotate((DeviceOrientation) orientation);
-    //[self drawView: nil];
-}
-
 - (void)drawView:(CADisplayLink *)displayLink {
     if (displayLink != nil) {
-        float elapsedSeconds = (float)(displayLink.timestamp - m_timestamp);
-        m_timestamp = (float)displayLink.timestamp;
+        float elapsedSeconds = (float) (displayLink.timestamp - m_timestamp);
+        m_timestamp = (float) displayLink.timestamp;
         m_renderingEngine->updateAnimation(elapsedSeconds);
     }
 

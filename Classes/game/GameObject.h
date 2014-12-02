@@ -20,7 +20,7 @@ public:
     virtual void render(Painter &) const = 0;
 
     float getAngle() const {
-        return angle_;
+        return angle;
     }
 
     float getSize() const {
@@ -36,7 +36,7 @@ public:
     float vAngle;
 
 protected:
-    float angle_;
+    float angle;
     float size;
 };
 

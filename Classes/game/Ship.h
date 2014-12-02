@@ -18,9 +18,9 @@ class Ship : public GameObject {
 
 public:
     Ship();
-    
+
     void init();
-    
+
     virtual void render(Painter &) const;
 
     void updateAnimation(Keys);
@@ -28,10 +28,10 @@ public:
     void setAngel(float angle);
 
     vec2 direction;
-    
+
     Jet jet_;
 protected:
- 
+
 };
 
 #endif

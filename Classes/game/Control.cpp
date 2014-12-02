@@ -1,8 +1,6 @@
 #include "Control.h"
 #include "Game.h"
 #include "Painter.h"
-#include "Entities.h"
-#include <iostream>
 
 Control::Control() {
 
@@ -11,7 +9,7 @@ Control::Control() {
 void Control::init(KeyState _keystate) {
     keystate = _keystate;
     size = Game::getInstance().getWidth() / 5;
-    angle_ = 0;
+    angle = 0;
     scale = 1.0f;
     Vertex vertex;
 
@@ -26,7 +24,7 @@ void Control::init(KeyState _keystate) {
             MakePoint(-size / 4, 0);
             MakePoint(-size / 2, 0);
             break;
-            
+
         case KEY_DOWN:
             vertex.Color = vec4(1, 1, 0, 1);
             MakePoint(0, size / 2);
@@ -37,10 +35,9 @@ void Control::init(KeyState _keystate) {
             MakePoint(-size / 4, 0);
             MakePoint(-size / 2, 0);
             break;
-           
+
         case KEY_FIRE:
-            Vertex vertex;
-            vertex.Color = vec4(1,0,0,1);
+            vertex.Color = vec4(1, 0, 0, 1);
             int vertexCount = 16;
             for (int i = 0; i < vertexCount; ++i) {
                 float kFactor = (i % 2) ? 0.5f : 1.0f;
@@ -49,9 +46,9 @@ void Control::init(KeyState _keystate) {
             }
             break;
     }
-    
+
     if (keystate == KEY_DOWN) {
-        angle_= 180;
+        angle = 180;
     }
 }
 
@@ -73,10 +70,10 @@ bool Control::isClicked(vec2 location) {
     vec2 originInScreen;
     originInScreen.x = (position.x + width) / 2;
     originInScreen.y = (-position.y + height) / 2;
-    
+
     float distance = (float) sqrt((originInScreen.x - location.x) * (originInScreen.x - location.x)
-                                  + (originInScreen.y - location.y) * (originInScreen.y - location.y));
-    if(distance <= size) {
+                                              + (originInScreen.y - location.y) * (originInScreen.y - location.y));
+    if (distance <= size) {
         return true;
     } else {
         return false;

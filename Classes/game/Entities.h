@@ -15,7 +15,7 @@ enum KeyState {
     KEY_UP, KEY_DOWN, KEY_FIRE
 };
 
-enum {
+enum JetState {
     JET_FRONT, JET_BACK
 };
 
@@ -25,6 +25,5 @@ typedef std::bitset<5> Keys;
 #define MakePoint(_x, _y) \
     vertex.Position = vec2(_x, _y); \
     body.push_back(vertex);
-
 
 #endif //__Asteroids_Entities_H__

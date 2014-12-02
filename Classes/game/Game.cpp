@@ -21,23 +21,23 @@ Game::~Game() {
 void Game::init(int _width, int _height) {
     width = _width;
     height = _height;
-    
+
     ship.init();
-    
-    keyUp.init(KEY_UP);
-    keyDown.init(KEY_DOWN);
-    keyFire.init(KEY_FIRE);
-    
-    keyUp.position.x =  -width + 1*width / 3;
-    keyUp.position.y = -height * CONTROL_Y_PER_HEIGHT;
-    keyDown.position.x = 0;
-    keyDown.position.y = -height * CONTROL_Y_PER_HEIGHT;
-    keyFire.position.x = width - 1*width / 3;
-    keyFire.position.y = -height * CONTROL_Y_PER_HEIGHT;
-    
-    level_ = 1;
-    m_pivotPoint.x = width / 2;
-    m_pivotPoint.y = height / 2;
+
+    controlUp.init(KEY_UP);
+    controlDown.init(KEY_DOWN);
+    controlFire.init(KEY_FIRE);
+
+    controlUp.position.x =  -width + 1*width / 3;
+    controlUp.position.y = -height * CONTROL_Y_PER_HEIGHT;
+    controlDown.position.x = 0;
+    controlDown.position.y = -height * CONTROL_Y_PER_HEIGHT;
+    controlFire.position.x = width - 1*width / 3;
+    controlFire.position.y = -height * CONTROL_Y_PER_HEIGHT;
+
+    level = 1;
+    pivotPoint.x = width / 2;
+    pivotPoint.y = height / 2;
 
     reset();
 }
@@ -53,12 +53,12 @@ void Game::reset() {
     }
     bullets.clear();
 
-    for (int i = 0; i < level_; ++i) {
+    for (int i = 0; i < level; ++i) {
         Asteroid *a = new Asteroid;
         a->position.x = rand() % width - width / 2;
         a->position.y = rand() % height - height / 2;
-        a->velocity.x = 0.1f * level_ * (rand() % 2 - 2 );
-        a->velocity.y = 0.1f * level_ * (rand() % 2 - 2 );
+        a->velocity.x = 0.1f * level * (rand() % 2 - 2 );
+        a->velocity.y = 0.1f * level * (rand() % 2 - 2 );
         asteroids.push_back(a);
     }
 }
@@ -73,10 +73,10 @@ void Game::render(Painter &p) const {
     for (auto b : bullets) {
         b->render(p);
     }
-    
-    keyUp.render(p);
-    keyDown.render(p);
-    keyFire.render(p);
+
+    controlUp.render(p);
+    controlDown.render(p);
+    controlFire.render(p);
 }
 
 float dist(const vec2 aPosition, const vec2 bPosition) {
@@ -92,10 +92,10 @@ Keys myKeys;
 
 void Game::updateAnimation(float timeStep) {
     Keys keys = myKeys;
-    keyUp.updateAnimation(keys);
-    keyDown.updateAnimation(keys);
-    keyFire.updateAnimation(keys);
-    
+    controlUp.updateAnimation(keys);
+    controlDown.updateAnimation(keys);
+    controlFire.updateAnimation(keys);
+
     if (keys[KEY_FIRE]) {
         Bullet *b = new Bullet;
         b->velocity.x = ship.direction.x * BULLET_VELOCITY_FACTOR;
@@ -126,9 +126,9 @@ void Game::updateAnimation(float timeStep) {
             myKeys = oldKeys;
         }
     }
-    
+
     ship.updateAnimation(myKeys);
-    
+
     for (auto b: bullets) {
         b->updateAnimation(v);
     }
@@ -136,7 +136,7 @@ void Game::updateAnimation(float timeStep) {
     for (auto a: asteroids) {
         a->updateAnimation(v);
     }
-    
+
     checkColliders();
 
     myKeys.reset();
@@ -160,11 +160,11 @@ void Game::checkColliders(){
                 else {
                     delete *a;
                     asteroids.erase(a);
-                    
+
                     delete *b;
                     bullets.erase(b);
                     if (asteroids.empty()) {
-                        ++level_;
+                        ++level;
                         reset();
                         return;
                     }
@@ -176,22 +176,22 @@ void Game::checkColliders(){
             if (isCollision)
                 break;
         }
-        
+
         ++a;
         if (isCollision)
             break;
     }
-    
+
     for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end(); ++a) {
         float d = distNormal((*a)->position);
         if (d < ((*a)->getSize() - 1)) {
             std::cout << "BANG! \n";
-            level_ = 1;
+            level = 1;
             reset();
             return;
         }
     }
-    
+
     for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
         if (!(*b)->isLive) {
             delete *b;
@@ -212,22 +212,22 @@ void Game::onFingerUp(ivec2 location) {
 void Game::onFingerDown(ivec2 location) {
     std::cout << "CLICK " << location.x << " " << location.y << "\n";
     bool isControlClicked = false;
-    
-    if(keyUp.isClicked(location)) {
+
+    if(controlUp.isClicked(location)) {
         myKeys.set(KEY_UP);
         isControlClicked = true;
     }
-    if(keyDown.isClicked(location)) {
+    if(controlDown.isClicked(location)) {
         myKeys.set(KEY_DOWN);
         isControlClicked = true;
     }
-    if(keyFire.isClicked(location)) {
+    if(controlFire.isClicked(location)) {
         myKeys.set(KEY_FIRE);
         isControlClicked = true;
     }
-    
+
     if (!isControlClicked) {
-        vec2 direction = vec2(location - m_pivotPoint).Normalized();
+        vec2 direction = vec2(location - pivotPoint).Normalized();
         direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
         float m_rotationAngle = (float) (std::acos(direction.y) * 180.0f * M_1_PI);
         if (direction.x > 0) {
@@ -246,7 +246,7 @@ void Game::onFingerMove(ivec2 previous, ivec2 location) {
 void Game::calculateCollidersVelocity(vec2 &a, vec2 &b) {
     b.x = -a.y * COLLISION_VELOCITY_IMPROVEMENT;
     b.y = a.x * COLLISION_VELOCITY_IMPROVEMENT;
-    
+
     a.x = a.y * COLLISION_VELOCITY_IMPROVEMENT;
     a.y = -a.x * COLLISION_VELOCITY_IMPROVEMENT;
 }
