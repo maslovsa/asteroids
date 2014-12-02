@@ -2,8 +2,7 @@
 
 @implementation AsteroidsAppDelegate
 
-- (void) applicationDidFinishLaunching: (UIApplication*) application
-{
+- (void) applicationDidFinishLaunching: (UIApplication*) application {
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     
     m_window = [[UIWindow alloc] initWithFrame: screenBounds];
@@ -13,8 +12,7 @@
     [m_window makeKeyAndVisible];
 }
 
-- (void) dealloc
-{
+- (void) dealloc {
     [m_view release];
     [m_window release];
     [super dealloc];

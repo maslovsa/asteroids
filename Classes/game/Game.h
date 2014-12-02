@@ -18,11 +18,8 @@ class Painter;
 
 typedef std::unique_ptr<Asteroid> AsteroidPtr;
 typedef std::vector<std::unique_ptr<Asteroid> > Asteroids;
-typedef std::vector<std::unique_ptr<Asteroid> >::iterator AsteroidIterator;
-
 typedef std::unique_ptr<Bullet> BulletPtr;
 typedef std::vector<std::unique_ptr<Bullet> > Bullets;
-typedef std::vector<std::unique_ptr<Bullet> >::iterator BulletsIterator;
 
 class Game {
 public:
@@ -67,7 +64,7 @@ private:
     void calculateCollidersVelocity(vec2 &a, vec2 &b);
 
 private:
-    // viewport
+    // Viewport
     int width;
     int height;
     ivec2 pivotPoint;

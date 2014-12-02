@@ -7,7 +7,7 @@ Asteroid::Asteroid() {
     angle = rand() % 31400 / 1000.0f;
     vAngle = 0.3f;
     scale = 1.0f;
-    size = Game::getInstance().getWidth() / 10;
+    size = Game::getInstance().getWidth() / 8;
     Vertex vertex;
     vec4 color(0, 1, 1, 1);
     vertex.Color = color;

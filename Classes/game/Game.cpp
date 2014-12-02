@@ -3,7 +3,7 @@
 
 const float CONTROL_Y_PER_HEIGHT = 0.9f;
 const float BULLET_VELOCITY_FACTOR = 6;
-const float COLLISION_VELOCITY_IMPROVEMENT = 1.3f;
+const float COLLISION_VELOCITY_IMPROVEMENT = 1.4f;
 const float SHIP_ACCELERATE = 5;
 const float SHIP_ACCELERATE_FACTOR = 0.95;
 const float SHIP_ACCELERATE_DURATION = 20.f;
@@ -42,7 +42,7 @@ void Game::init(int _width, int _height) {
 
 float dist(const vec2 aPosition, const vec2 bPosition) {
     return (float) sqrt((bPosition.x - aPosition.x) * (bPosition.x - aPosition.x)
-                        + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
+                                    + (bPosition.y - aPosition.y) * (bPosition.y - aPosition.y));
 }
 
 float distNormal(const vec2 aPosition) {
@@ -50,7 +50,7 @@ float distNormal(const vec2 aPosition) {
 }
 
 int randomSign() {
-    return ((rand() % 10) % 2==0) ? 1 : -1;
+    return ((rand() % 10) % 2 == 0) ? 1 : -1;
 }
 
 void Game::reset() {
@@ -69,27 +69,27 @@ void Game::reset() {
 void Game::render(Painter &p) const {
     ship.render(p);
 
-    for (auto a = asteroids.begin(); a != asteroids.end(); ++a)
+    for (auto a = asteroids.begin(); a != asteroids.end(); ++a) {
         a->get()->render(p);
-    
-    for (auto b = bullets.begin(); b != bullets.end(); ++b)
+    }
+
+    for (auto b = bullets.begin(); b != bullets.end(); ++b) {
         b->get()->render(p);
+    }
 
     controlUp.render(p);
     controlDown.render(p);
     controlFire.render(p);
 }
 
-
 Keys myKeys;
 
 void Game::updateAnimation(float timeStep) {
-    Keys keys = myKeys;
-    controlUp.updateAnimation(keys);
-    controlDown.updateAnimation(keys);
-    controlFire.updateAnimation(keys);
+    controlUp.updateAnimation(myKeys);
+    controlDown.updateAnimation(myKeys);
+    controlFire.updateAnimation(myKeys);
 
-    if (keys[KEY_FIRE]) {
+    if (myKeys[KEY_FIRE]) {
         BulletPtr bullet(new Bullet());
         bullet->velocity.x = ship.direction.x * BULLET_VELOCITY_FACTOR;
         bullet->velocity.y = ship.direction.y * BULLET_VELOCITY_FACTOR;
@@ -107,7 +107,6 @@ void Game::updateAnimation(float timeStep) {
         currentVelocity = v;
     } else {
         if (--currentDuration > 0) {
-            std::cout << currentVelocity.x << currentVelocity.y << "\n";
             if (currentDuration > SHIP_ACCELERATE_DURATION / 2) {
                 v.x = currentVelocity.x * currentDuration / SHIP_ACCELERATE_DURATION / 2;
                 v.y = currentVelocity.y * currentDuration / SHIP_ACCELERATE_DURATION / 2;
@@ -122,12 +121,14 @@ void Game::updateAnimation(float timeStep) {
 
     ship.updateAnimation(myKeys);
 
-    for (auto a = asteroids.begin(); a != asteroids.end(); ++a)
+    for (auto a = asteroids.begin(); a != asteroids.end(); ++a) {
         a->get()->updateAnimation(v);
-    
-    for (auto b = bullets.begin(); b != bullets.end(); ++b)
+    }
+
+    for (auto b = bullets.begin(); b != bullets.end(); ++b) {
         b->get()->updateAnimation(v);
-    
+    }
+
     checkColliders();
 
     myKeys.reset();
@@ -137,12 +138,12 @@ void Game::checkColliders() {
     bool isCollision = false;
     for (auto a = asteroids.begin(); a != asteroids.end();) {
         for (auto b = bullets.begin(); b != bullets.end();) {
-            float d = dist((*a)->position, (*b)->position);
-            if (d < ((*a)->getSize() + (*b)->getSize())) {
-                if ((*a)->isBig()) {
-                    (*a)->setSize((*a)->getSize() / 2);
+            float distanceAB = dist(a->get()->position, b->get()->position);
+            if (distanceAB < (a->get()->getSize() + b->get()->getSize())) {
+                if (a->get()->isBig()) {
+                    a->get()->setSize(a->get()->getSize() / 2);
                     AsteroidPtr asteroidNew(new Asteroid(**a));
-                    calculateCollidersVelocity((*a)->velocity, asteroidNew->velocity);
+                    calculateCollidersVelocity(a->get()->velocity, asteroidNew->velocity);
                     asteroids.push_back(std::move(asteroidNew));
                     bullets.erase(b);
                 } else {
@@ -170,8 +171,8 @@ void Game::checkColliders() {
     }
 
     for (auto a = asteroids.begin(); a != asteroids.end(); ++a) {
-        float d = distNormal((*a)->position);
-        if (d < ((*a)->getSize() - 1)) {
+        float distanceAS = distNormal(a->get()->position);
+        if (distanceAS < (a->get()->getSize())) {
             std::cout << "GAME OVER! \n";
             level = 1;
             reset();
@@ -179,9 +180,9 @@ void Game::checkColliders() {
         }
     }
 
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](std::unique_ptr<Bullet> const& b) -> bool{
-            return !b.get()->isLive;
-       }), bullets.end());
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](std::unique_ptr<Bullet> const &b) -> bool {
+        return !b.get()->isLive;
+    }), bullets.end());
 }
 
 void Game::onFingerUp(ivec2 location) {
@@ -189,9 +190,7 @@ void Game::onFingerUp(ivec2 location) {
 }
 
 void Game::onFingerDown(ivec2 location) {
-    std::cout << "CLICK " << location.x << " " << location.y << "\n";
     bool isControlClicked = false;
-
     if (controlUp.isClicked(location)) {
         myKeys.set(KEY_UP);
         isControlClicked = true;
@@ -207,12 +206,11 @@ void Game::onFingerDown(ivec2 location) {
 
     if (!isControlClicked) {
         vec2 direction = vec2(location - pivotPoint).Normalized();
-        direction.y = -direction.y; // Flip the Y axis because pixel coords increase towards the bottom.
+        direction.y = -direction.y;
         float m_rotationAngle = (float) (std::acos(direction.y) * 180.0f * M_1_PI);
         if (direction.x > 0) {
             m_rotationAngle = -m_rotationAngle;
         }
-        std::cout << "x " << direction.x << ":" << direction.y << " angle=" << m_rotationAngle << "\n";
         ship.direction = direction;
         ship.setAngel(m_rotationAngle);
     }

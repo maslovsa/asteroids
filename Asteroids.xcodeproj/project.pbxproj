@@ -64,7 +64,6 @@
 		8FD58C761A2C73D600E6E7AD /* Control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
 		8FD58C771A2C73D600E6E7AD /* Control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		8FED84571A25C7EA00789BC5 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
-		8FED84581A25C7EA00789BC5 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
 		8FED84591A25C7EA00789BC5 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -187,7 +186,6 @@
 			isa = PBXGroup;
 			children = (
 				8FED84571A25C7EA00789BC5 /* Matrix.hpp */,
-				8FED84581A25C7EA00789BC5 /* Quaternion.hpp */,
 				8FED84591A25C7EA00789BC5 /* Vector.hpp */,
 			);
 			path = geometry;

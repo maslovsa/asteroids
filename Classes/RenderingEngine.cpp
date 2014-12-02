@@ -7,36 +7,43 @@
 #include "../Shaders/Simple.frag"
 #include "ShaderHelper.h"
 
+#include "ShaderHelper.h"
+
 class RenderingEngine : public IRenderingEngine {
 public:
     RenderingEngine();
+
     void init(int width, int height);
+
     void render() const;
+
     void updateAnimation(float timeStep);
+
     void onFingerUp(ivec2 location);
+
     void onFingerDown(ivec2 location);
+
     void onFingerMove(ivec2 oldLocation, ivec2 newLocation);
+
 private:
     void applyOrtho(float maxX, float maxY) const;
+
     GLuint m_simpleProgram;
     GLuint m_framebuffer;
     GLuint m_renderbuffer;
 };
 
-IRenderingEngine* CreateRenderer()
-{
+IRenderingEngine *CreateRenderer() {
     return new RenderingEngine();
 }
 
-RenderingEngine::RenderingEngine()
-{
+RenderingEngine::RenderingEngine() {
     // Create & bind the color buffer so that the caller can allocate its space.
     glGenRenderbuffers(1, &m_renderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_renderbuffer);
 }
 
-void RenderingEngine::init(int width, int height)
-{
+void RenderingEngine::init(int width, int height) {
     glClearColor(0.0f, 0.0f, 0.0f, 1);
     // Create the framebuffer object and attach the color buffer.
     glGenFramebuffers(1, &m_framebuffer);
@@ -56,15 +63,14 @@ void RenderingEngine::init(int width, int height)
     Game::getInstance().init(width, height);
 }
 
-void RenderingEngine::applyOrtho(float maxX, float maxY) const
-{
+void RenderingEngine::applyOrtho(float maxX, float maxY) const {
     float a = 1.0f / maxX;
     float b = 1.0f / maxY;
     float ortho[16] = {
-        a, 0,  0, 0,
-        0, b,  0, 0,
-        0, 0, -1, 0,
-        0, 0,  0, 1
+                a, 0, 0, 0,
+                0, b, 0, 0,
+                0, 0, -1, 0,
+                0, 0, 0, 1
     };
 
     GLint projectionUniform = glGetUniformLocation(m_simpleProgram, "Projection");
@@ -77,15 +83,15 @@ void RenderingEngine::render() const {
     Game::getInstance().render(p);
 }
 
-void RenderingEngine::onFingerUp(ivec2 location){
+void RenderingEngine::onFingerUp(ivec2 location) {
     Game::getInstance().onFingerUp(location);
 }
 
-void RenderingEngine::onFingerDown(ivec2 location){
+void RenderingEngine::onFingerDown(ivec2 location) {
     Game::getInstance().onFingerDown(location);
 }
 
-void RenderingEngine::onFingerMove(ivec2 previous, ivec2 location){
+void RenderingEngine::onFingerMove(ivec2 previous, ivec2 location) {
     Game::getInstance().onFingerMove(previous, location);
 }
 
