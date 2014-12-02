@@ -13,9 +13,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-    for (auto a: asteroids) {
-        delete a;
-    }
+    asteroids.clear();
 }
 
 void Game::init(int _width, int _height) {
@@ -28,11 +26,11 @@ void Game::init(int _width, int _height) {
     controlDown.init(KEY_DOWN);
     controlFire.init(KEY_FIRE);
 
-    controlUp.position.x =  -width + 1*width / 3;
+    controlUp.position.x = -width + width / 3;
     controlUp.position.y = -height * CONTROL_Y_PER_HEIGHT;
     controlDown.position.x = 0;
     controlDown.position.y = -height * CONTROL_Y_PER_HEIGHT;
-    controlFire.position.x = width - 1*width / 3;
+    controlFire.position.x = width - width / 3;
     controlFire.position.y = -height * CONTROL_Y_PER_HEIGHT;
 
     level = 1;
@@ -40,43 +38,6 @@ void Game::init(int _width, int _height) {
     pivotPoint.y = height / 2;
 
     reset();
-}
-
-void Game::reset() {
-    for (auto a : asteroids) {
-        delete a;
-    }
-    asteroids.clear();
-
-    for (auto b : bullets) {
-        delete b;
-    }
-    bullets.clear();
-
-    for (int i = 0; i < level; ++i) {
-        Asteroid *a = new Asteroid;
-        a->position.x = rand() % width - width / 2;
-        a->position.y = rand() % height - height / 2;
-        a->velocity.x = 0.1f * level * (rand() % 2 - 2 );
-        a->velocity.y = 0.1f * level * (rand() % 2 - 2 );
-        asteroids.push_back(a);
-    }
-}
-
-void Game::render(Painter &p) const {
-    ship.render(p);
-
-    for (auto a : asteroids) {
-        a->render(p);
-    }
-
-    for (auto b : bullets) {
-        b->render(p);
-    }
-
-    controlUp.render(p);
-    controlDown.render(p);
-    controlFire.render(p);
 }
 
 float dist(const vec2 aPosition, const vec2 bPosition) {
@@ -88,6 +49,38 @@ float distNormal(const vec2 aPosition) {
     return (float) sqrt(aPosition.x * aPosition.x + aPosition.y * aPosition.y);
 }
 
+int randomSign() {
+    return ((rand() % 10) % 2==0) ? 1 : -1;
+}
+
+void Game::reset() {
+    asteroids.clear();
+    bullets.clear();
+    for (int i = 0; i < level; ++i) {
+        AsteroidPtr asteroid(new Asteroid());
+        asteroid->position.x = rand() % width - width / 2;
+        asteroid->position.y = rand() % height - height / 2;
+        asteroid->velocity.x = randomSign() * 0.1f * level;
+        asteroid->velocity.y = randomSign() * 0.1f * level;
+        asteroids.push_back(std::move(asteroid));
+    }
+}
+
+void Game::render(Painter &p) const {
+    ship.render(p);
+
+    for (auto a = asteroids.begin(); a != asteroids.end(); ++a)
+        a->get()->render(p);
+    
+    for (auto b = bullets.begin(); b != bullets.end(); ++b)
+        b->get()->render(p);
+
+    controlUp.render(p);
+    controlDown.render(p);
+    controlFire.render(p);
+}
+
+
 Keys myKeys;
 
 void Game::updateAnimation(float timeStep) {
@@ -97,12 +90,12 @@ void Game::updateAnimation(float timeStep) {
     controlFire.updateAnimation(keys);
 
     if (keys[KEY_FIRE]) {
-        Bullet *b = new Bullet;
-        b->velocity.x = ship.direction.x * BULLET_VELOCITY_FACTOR;
-        b->velocity.y = ship.direction.y * BULLET_VELOCITY_FACTOR;
-        b->position.x = ship.getSize() * ship.direction.x;
-        b->position.y = ship.getSize() * ship.direction.y;
-        bullets.push_back(b);
+        BulletPtr bullet(new Bullet());
+        bullet->velocity.x = ship.direction.x * BULLET_VELOCITY_FACTOR;
+        bullet->velocity.y = ship.direction.y * BULLET_VELOCITY_FACTOR;
+        bullet->position.x = ship.getSize() * ship.direction.x;
+        bullet->position.y = ship.getSize() * ship.direction.y;
+        bullets.push_back(std::move(bullet));
     };
 
     vec2 v = vec2(0, 0);
@@ -129,39 +122,31 @@ void Game::updateAnimation(float timeStep) {
 
     ship.updateAnimation(myKeys);
 
-    for (auto b: bullets) {
-        b->updateAnimation(v);
-    }
-
-    for (auto a: asteroids) {
-        a->updateAnimation(v);
-    }
-
+    for (auto a = asteroids.begin(); a != asteroids.end(); ++a)
+        a->get()->updateAnimation(v);
+    
+    for (auto b = bullets.begin(); b != bullets.end(); ++b)
+        b->get()->updateAnimation(v);
+    
     checkColliders();
 
     myKeys.reset();
 }
 
-
-void Game::checkColliders(){
+void Game::checkColliders() {
     bool isCollision = false;
-    for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end();) {
-        for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
+    for (auto a = asteroids.begin(); a != asteroids.end();) {
+        for (auto b = bullets.begin(); b != bullets.end();) {
             float d = dist((*a)->position, (*b)->position);
             if (d < ((*a)->getSize() + (*b)->getSize())) {
                 if ((*a)->isBig()) {
                     (*a)->setSize((*a)->getSize() / 2);
-                    Asteroid *aa = new Asteroid(**a);
-                    calculateCollidersVelocity((*a)->velocity, aa->velocity);
-                    asteroids.push_back(aa);
-                    delete *b;
+                    AsteroidPtr asteroidNew(new Asteroid(**a));
+                    calculateCollidersVelocity((*a)->velocity, asteroidNew->velocity);
+                    asteroids.push_back(std::move(asteroidNew));
                     bullets.erase(b);
-                }
-                else {
-                    delete *a;
+                } else {
                     asteroids.erase(a);
-
-                    delete *b;
                     bullets.erase(b);
                     if (asteroids.empty()) {
                         ++level;
@@ -173,36 +158,30 @@ void Game::checkColliders(){
             } else {
                 ++b;
             }
-            if (isCollision)
+            if (isCollision) {
                 break;
+            }
         }
 
         ++a;
-        if (isCollision)
+        if (isCollision) {
             break;
+        }
     }
 
-    for (Asteroids::iterator a = asteroids.begin(); a != asteroids.end(); ++a) {
+    for (auto a = asteroids.begin(); a != asteroids.end(); ++a) {
         float d = distNormal((*a)->position);
         if (d < ((*a)->getSize() - 1)) {
-            std::cout << "BANG! \n";
+            std::cout << "GAME OVER! \n";
             level = 1;
             reset();
             return;
         }
     }
 
-    for (Bullets::iterator b = bullets.begin(); b != bullets.end();) {
-        if (!(*b)->isLive) {
-            delete *b;
-            bullets.erase(b);
-        } else {
-            ++b;
-        }
-    }
-    //    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet &b) -> bool{
-    //        return !b.isLive;
-    //    }), bullets.end());
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](std::unique_ptr<Bullet> const& b) -> bool{
+            return !b.get()->isLive;
+       }), bullets.end());
 }
 
 void Game::onFingerUp(ivec2 location) {
@@ -213,15 +192,15 @@ void Game::onFingerDown(ivec2 location) {
     std::cout << "CLICK " << location.x << " " << location.y << "\n";
     bool isControlClicked = false;
 
-    if(controlUp.isClicked(location)) {
+    if (controlUp.isClicked(location)) {
         myKeys.set(KEY_UP);
         isControlClicked = true;
     }
-    if(controlDown.isClicked(location)) {
+    if (controlDown.isClicked(location)) {
         myKeys.set(KEY_DOWN);
         isControlClicked = true;
     }
-    if(controlFire.isClicked(location)) {
+    if (controlFire.isClicked(location)) {
         myKeys.set(KEY_FIRE);
         isControlClicked = true;
     }
