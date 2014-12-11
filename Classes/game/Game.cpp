@@ -9,11 +9,9 @@ const float SHIP_ACCELERATE_FACTOR = 0.95;
 const float SHIP_ACCELERATE_DURATION = 20.f;
 
 Game::Game() {
-
 }
 
 Game::~Game() {
-    asteroids.clear();
 }
 
 void Game::init(int _width, int _height) {

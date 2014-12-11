@@ -4,7 +4,7 @@
 #include <iostream>
 
 Asteroid::Asteroid() {
-    angle = rand() % 31400 / 1000.0f;
+    angle = rand() % 360;
     vAngle = 0.3f;
     scale = 1.0f;
     size = Game::getInstance().getWidth() / 8;
